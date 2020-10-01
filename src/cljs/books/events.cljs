@@ -4,31 +4,34 @@
    [books.db :as db]
    [books.tubes :as tubes]))
 
-(defn allocate-next-id
-  "Returns one more than the current largest id. This will break when deletion of books is added."
-  [books]
-  (inc (count books)))
+;; These are internal re-frame events. Events coming from the server are in books.tubes
 
 (re-frame/reg-event-db
- ::initialize-db
- (fn [_ _]
-   db/default-db))
+  ::initialize-db
+  tubes/send-to-server
+  (fn [_ _]
+    db/default-db))
 
 (re-frame/reg-event-fx
-  ::set-name
+  ::set-name-2
   tubes/send-to-server
   (fn [{:keys [db]} [_ name]]
     { :db (assoc db :name name)}))
 
 (re-frame/reg-event-db
-  ::set-name-2
+  ::set-name
+  tubes/send-to-server
   (fn [db [_ name]]
     (assoc db :name name)))
 
 (re-frame/reg-event-db
   ::add-book
   tubes/send-to-server
-  (fn [db [_ title]]
-    (let [books (:books db)
-          id (allocate-next-id books)]
-      (assoc db :books (conj books {:id id :title title :author "author goes here" :keywords "keywords go here"})))))
+  (fn [db [_ book]]
+    db))
+
+(re-frame/reg-event-db
+  ::delete-book
+  tubes/send-to-server
+  (fn [db [_ book-id]]
+    db))

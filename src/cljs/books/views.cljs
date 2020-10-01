@@ -6,52 +6,58 @@
    [clojure.string :as str]
    [reagent.core  :as reagent]
    ))
-(defn book-input [{:keys [title on-save on-stop]}]
-  (let [val  (reagent/atom title)
-        stop #(do (reset! val "")
-                  (when on-stop (on-stop)))
-        save #(let [v (-> @val str str/trim)]
-                (on-save v)
-                (stop))]
-    (fn [props]
-      [:input (merge (dissoc props :on-save :on-stop :title)
-                     {:type        "text"
-                      :value       @val
-                      :auto-focus  true
-                      :on-blur     save
-                      :on-change   #(reset! val (-> % .-target .-value))
-                      :on-key-down #(case (.-which %)
-                                      13 (save)
-                                      27 (stop)
-                                      nil)})])))
+
+(defn input-element
+  "An input element which updates its value on change"
+  [name placeholder  value]
+  [:input {:name name
+           :placeholder placeholder
+           :value @value
+           :on-change #(reset! value (-> % .-target .-value))}])
+
+(defn title-input [title-atom]
+  (input-element "title" "Book title" title-atom))
+
+(defn author-input [author-atom]
+  (input-element "author" "Author" author-atom))
+
+(defn keywords-input [keywords-atom]
+  (input-element "keywords" "Keywords" keywords-atom))
+
+(defn book-form []
+  (let [title-input-atom    (reagent/atom "")
+        author-input-atom   (reagent/atom "")
+        keywords-input-atom (reagent/atom "")]
+    (fn []
+      [:form
+       {:on-submit (fn [e] (.preventDefault e)
+                     (re-frame/dispatch [::events/add-book {:title    @title-input-atom
+                                                            :author   @author-input-atom
+                                                            :keywords @keywords-input-atom}]))}
+       [title-input    title-input-atom]
+       [author-input   author-input-atom]
+       [keywords-input keywords-input-atom]
+       [:button {:type :submit} "Submit"]])))
 
 (defn book-item []
-  (fn [{:keys [id title author keywords]}]
+  (fn [{:keys [_id title author keywords]}]
     [:li
      [:div.view
       [:h2 title]
       [:h3 author]
-      [:p keywords]]]))
-
-(defn book-entry []
-  [book-input
-   {:id "new-book"
-    :placeholder "Book name"
-    :on-save #(when (seq %)
-                (re-frame/dispatch [::events/add-book %]))}])
+      [:p keywords]
+      [:button {:on-click #(re-frame/dispatch [::events/delete-book _id])} "Delete"]]]))
 
 (defn book-list []
   (let [visible-books (re-frame/subscribe [::subs/books])]
     [:section#main
-     ;; [:p (str @visible-books)]
      [:ul#todo-list
       (for [book  @visible-books]
-        ^{:key (:id book)} [book-item book])]
-     ]))
+        ^{:key (:_id book)} [book-item book])]]))
 
 (defn main-panel []
   (let [name (re-frame/subscribe [::subs/name])]
     [:div
      [:h1 @name]
-     [book-entry]
+     [book-form]
      [book-list]]))

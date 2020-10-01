@@ -1,15 +1,16 @@
 (defproject books "0.1.0-SNAPSHOT"
-  :dependencies [[org.clojure/clojure "1.10.1"]
+  :dependencies [[http-kit "2.5.0"]
+                 [org.clojure/clojure "1.10.1"]
                  [org.clojure/clojurescript "1.10.773"
                   :exclusions [com.google.javascript/closure-compiler-unshaded
                                org.clojure/google-closure-library
                                org.clojure/google-closure-library-third-party]]
-                 [http-kit "2.5.0"]
-                 [thheller/shadow-cljs "2.11.0"]
                  [pneumatic-tubes "0.3.0"]
-                 [reagent "0.10.0"]
                  [re-frame "1.1.1"]
-                 [re-frisk "1.3.4"]]
+                 [re-frisk "1.3.4"]
+                 [reagent "0.10.0"]
+                 [thheller/shadow-cljs "2.11.0"]
+                 [com.novemberain/monger "3.5.0"]]
 
   :plugins [[lein-shadow "0.2.2"]
             [lein-shell "0.5.0"]]
@@ -55,6 +56,9 @@
             "ci"           ["with-profile" "prod" "do"
                             ["shadow" "compile" "karma-test"]
                             ["shell" "karma" "start" "--single-run" "--reporters" "junit,dots"]]}
+
+  :repl-options {:init-ns dev.main
+                 :nrepl-middleware [shadow.cljs.devtools.server.nrepl/middleware]}
 
   :profiles
   {:dev

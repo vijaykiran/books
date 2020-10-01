@@ -1,11 +1,11 @@
 (ns books.core
   (:require
-   [reagent.dom :as rdom]
+   [books.config  :as config]
+   [books.events  :as events]
+   [books.tubes   :as tubes]
+   [books.views   :as views]
    [re-frame.core :as re-frame]
-   [books.events :as events]
-   [books.views :as views]
-   [books.config :as config]
-   ))
+   [reagent.dom   :as rdom]))
 
 
 (defn dev-setup []
@@ -19,6 +19,7 @@
     (rdom/render [views/main-panel] root-el)))
 
 (defn init []
+  (tubes/start)
   (re-frame/dispatch-sync [::events/initialize-db])
   (dev-setup)
   (mount-root))

@@ -10,20 +10,23 @@
 (def tube (tubes/tube (str "ws://localhost:9091/ws") on-receive))
 (def send-to-server (re-frame/after (fn [_ v] (tubes/dispatch tube v))))
 
-(re-frame/reg-event-db
-  :say-hello
-  send-to-server
-  (fn [db [_ name]]
-    (.log js/console (str "Hello " name))
-    db))
+(defn start []
+  (tubes/create! tube))
 
-(re-frame/reg-event-db
-  :say-hello-processed
-  (fn [db _]
-    (.log js/console "Yay!!!")
-    db))
+;; These are re-frame events received from the server
 
 (re-frame/reg-event-db
   :acknowledge-book-added
-  (fn [db _]
-    (.log js/console "(serverside) book added")))
+  (fn [db [_ book]]
+    (assoc db :books (conj (:books db) book) )))
+
+(re-frame/reg-event-db
+  :initialize-db-received
+  (fn [db [_ book-data]]
+    (assoc db :books book-data)))
+
+(re-frame/reg-event-db
+  :remove-deleted-book
+  (fn [db [_ book-id]]
+    (.log js/console "Book ID: " book-id " to be deleted")
+    (assoc db :books (remove #(= book-id (:_id %)) (:books db)))))
