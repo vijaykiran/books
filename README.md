@@ -41,5 +41,3 @@ Book model uses only strings. These should at least be checked in the case of li
 Add a local link for each book, and a mechanism to open it on click. Probably send an event to the server which can easily
 open a file using open or xd-open. Browser file:// link would probably be ok as a first step.
 
-Re-factor the book model. Storing each field as an individual atom is probably not the best way.
-
