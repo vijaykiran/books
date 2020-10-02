@@ -11,7 +11,8 @@ C-c C-x j j  (M-x cider-jack-in-clj) select lein as the app
 (start-dev)
 
 C-c C-x s s  (M-x cider-connect-sibling-cljs)
-This will open a cljs repl and run the code that starts the tube.
+This will open a cljs repl and run the shadow-cljs build and watch.
+
 Open one or more browser windows at localhost:8280
 
 ![screenshot](docs/screenshot.png)

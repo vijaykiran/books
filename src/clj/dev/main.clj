@@ -1,5 +1,5 @@
 (ns dev.main
-  (:require [core :as bc]
+  (:require [books.core :as bc]
             [shadow.cljs.devtools.server :as shadow-server]))
 
 (defn start-dev []

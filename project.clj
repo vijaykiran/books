@@ -1,15 +1,15 @@
 (defproject books "0.1.0-SNAPSHOT"
   :dependencies [[http-kit "2.5.0"]
                  [org.clojure/clojure "1.10.1"]
-                 [org.clojure/clojurescript "1.10.773"
-                  :exclusions [com.google.javascript/closure-compiler-unshaded
-                               org.clojure/google-closure-library
-                               org.clojure/google-closure-library-third-party]]
+                 [org.clojure/clojurescript "1.10.773" :exclusions [com.google.javascript/closure-compiler-unshaded
+                                                                    org.clojure/google-closure-library
+                                                                    org.clojure/google-closure-library-third-party]]
                  [pneumatic-tubes "0.3.0"]
                  [re-frame "1.1.1"]
                  [re-frisk "1.3.4"]
                  [reagent "0.10.0"]
                  [thheller/shadow-cljs "2.11.0"]
+                 ;; DO NOT sort this list. monger must come last.
                  [com.novemberain/monger "3.5.0"]]
 
   :plugins [[lein-shadow "0.2.2"]

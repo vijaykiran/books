@@ -1,4 +1,4 @@
-(ns db
+(ns books.db
   (:require [monger.core :as mg]))
 
 (def database "book-catalogue")

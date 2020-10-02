@@ -1,6 +1,6 @@
-(ns core
-  (:require [handler              :refer [handler]]
-            [org.httpkit.server      :as server]))
+(ns books.core
+  (:require [books.handler :refer [handler]]
+            [org.httpkit.server :as server]))
 
 (defonce server (atom nil))
 
