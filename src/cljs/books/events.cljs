@@ -35,3 +35,18 @@
   tubes/send-to-server
   (fn [db [_ book-id]]
     db))
+
+(re-frame/reg-event-db
+  ::show-add-book
+  (fn [db [_ _]]
+    (assoc db :show-add-book true)))
+
+(re-frame/reg-event-db
+  ::hide-add-book
+  (fn [db [_ _]]
+    (assoc db :show-add-book false)))
+
+(re-frame/reg-event-db
+  ::toggle-add-book
+  (fn [db [_ _]]
+    (assoc db :show-add-book (not (:show-add-book db)))))

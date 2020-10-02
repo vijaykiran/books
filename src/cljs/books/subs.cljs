@@ -11,3 +11,8 @@
   ::books
   (fn [db]
     (:books db)))
+
+(re-frame/reg-sub
+  ::show-add-book
+  (fn [db]
+    (:show-add-book db)))

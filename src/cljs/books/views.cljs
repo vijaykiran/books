@@ -8,6 +8,7 @@
    ))
 
 (defn input-element
+  ;;TODO If there was a single atom for a book then there would be less duplication and adding fields would be easier
   "An input element which updates its value on change"
   [name placeholder  value]
   [:input {:name name
@@ -24,40 +25,67 @@
 (defn keywords-input [keywords-atom]
   (input-element "keywords" "Keywords" keywords-atom))
 
+;;TODO these fields should not just be strings, implement year and http link checking.
+(defn published-input [published-atom]
+  (input-element "published" "Published date" published-atom))
+
+(defn archive-input [archive-atom]
+  (input-element "archive" "Archive link" archive-atom))
+
 (defn book-form []
-  (let [title-input-atom    (reagent/atom "")
-        author-input-atom   (reagent/atom "")
-        keywords-input-atom (reagent/atom "")]
+  (let [title-input-atom     (reagent/atom "")
+        author-input-atom    (reagent/atom "")
+        published-input-atom (reagent/atom "")
+        archive-input-atom   (reagent/atom "")
+        keywords-input-atom  (reagent/atom "")]
     (fn []
-      [:form
-       {:on-submit (fn [e] (.preventDefault e)
-                     (re-frame/dispatch [::events/add-book {:title    @title-input-atom
-                                                            :author   @author-input-atom
-                                                            :keywords @keywords-input-atom}]))}
-       [title-input    title-input-atom]
-       [author-input   author-input-atom]
-       [keywords-input keywords-input-atom]
-       [:button {:type :submit} "Submit"]])))
+      (let [visible (re-frame/subscribe [::subs/show-add-book])]
+        (if @visible
+          [:section#add-book
+           [:form#add-book-form
+            {:on-submit (fn [e] (.preventDefault e)
+                          (re-frame/dispatch [::events/add-book {:title     @title-input-atom
+                                                                 :author    @author-input-atom
+                                                                 :published @published-input-atom
+                                                                 :archive   @archive-input-atom
+                                                                 :keywords  @keywords-input-atom}]))}
+            [title-input     title-input-atom]
+            [author-input    author-input-atom]
+            [published-input published-input-atom]
+            [archive-input   archive-input-atom]
+            [keywords-input  keywords-input-atom]
+            [:button {:type :submit} "Submit"]]])))))
 
 (defn book-item []
-  (fn [{:keys [_id title author keywords]}]
-    [:li
-     [:div.view
-      [:h2 title]
-      [:h3 author]
-      [:p keywords]
-      [:button {:on-click #(re-frame/dispatch [::events/delete-book _id])} "Delete"]]]))
+  (fn [{:keys [_id title author published archive keywords]}]
+    (let [delete-button-visible (re-frame/subscribe [::subs/show-add-book])]
+      [:div.book
+       [:h2
+        title ]
+       [:div#book-details
+        [:h3 author]
+        [:p published]
+        [:p keywords]
+        [:a {:href archive} "Archive-link"]
+        (if @delete-button-visible
+          [:button {:on-click #(re-frame/dispatch [::events/delete-book _id])} "Delete"])]])))
 
 (defn book-list []
   (let [visible-books (re-frame/subscribe [::subs/books])]
-    [:section#main
-     [:ul#todo-list
-      (for [book  @visible-books]
-        ^{:key (:_id book)} [book-item book])]]))
+    [:section#book-list
+     (for [book  @visible-books]
+       ^{:key (:_id book)} [book-item book])]))
+
+(defn header []
+  (let [name (re-frame/subscribe [::subs/name])]
+    [:div#header
+     [:h1 @name]
+     [:button {:on-click #(re-frame/dispatch [::events/toggle-add-book])} "Add book"]]))
 
 (defn main-panel []
   (let [name (re-frame/subscribe [::subs/name])]
-    [:div
-     [:h1 @name]
-     [book-form]
-     [book-list]]))
+    [:<>
+     [header]
+     [:div#main
+      [book-form]
+      [book-list]]]))

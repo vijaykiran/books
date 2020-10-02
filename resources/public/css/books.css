@@ -1,0 +1,27 @@
+#header {
+    display: flex;
+    justify-content: space-between;
+    background: lightsteelblue;
+    border: solid black;
+    padding: 5px;
+}
+
+.book {
+    padding: 8px;
+
+}
+
+div#book-details {
+    display: flex;
+    justify-content: space-between;
+    margin: 0px
+}
+
+h2,p,h3 {
+    margin: 0px;
+}
+
+#add-book-form {
+    display: flex;
+    flex-direction: column;
+}
