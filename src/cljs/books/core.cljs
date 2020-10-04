@@ -3,7 +3,7 @@
    [books.config  :as config]
    [books.events  :as events]
    [books.tubes   :as tubes]
-   [books.views   :as views]
+   [books.views.main   :as views]
    [re-frame.core :as re-frame]
    [reagent.dom   :as rdom]))
 

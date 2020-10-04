@@ -1,11 +1,9 @@
-(ns books.views
-  (:require
-   [re-frame.core :as re-frame]
-   [books.subs :as subs]
-   [books.events :as events]
-   [clojure.string :as str]
-   [reagent.core  :as reagent]
-   ))
+(ns books.views.book
+  (:require [re-frame.core :as re-frame]
+            [books.subs :as subs]
+            [books.events :as events]
+            [clojure.string :as str]
+            [reagent.core  :as reagent]))
 
 (defn input-element
   ;;TODO If there was a single atom for a book then there would be less duplication and adding fields would be easier
@@ -39,22 +37,20 @@
         archive-input-atom   (reagent/atom "")
         keywords-input-atom  (reagent/atom "")]
     (fn []
-      (let [visible (re-frame/subscribe [::subs/show-add-book])]
-        (if @visible
-          [:section#add-book
-           [:form#add-book-form
-            {:on-submit (fn [e] (.preventDefault e)
-                          (re-frame/dispatch [::events/add-book {:title     @title-input-atom
-                                                                 :author    @author-input-atom
-                                                                 :published @published-input-atom
-                                                                 :archive   @archive-input-atom
-                                                                 :keywords  @keywords-input-atom}]))}
-            [title-input     title-input-atom]
-            [author-input    author-input-atom]
-            [published-input published-input-atom]
-            [archive-input   archive-input-atom]
-            [keywords-input  keywords-input-atom]
-            [:button {:type :submit} "Submit"]]])))))
+      [:section#add-book
+       [:form#add-book-form
+        {:on-submit (fn [e] (.preventDefault e)
+                      (re-frame/dispatch [::events/add-book {:title     @title-input-atom
+                                                             :author    @author-input-atom
+                                                             :published @published-input-atom
+                                                             :archive   @archive-input-atom
+                                                             :keywords  @keywords-input-atom}]))}
+        [title-input     title-input-atom]
+        [author-input    author-input-atom]
+        [published-input published-input-atom]
+        [archive-input   archive-input-atom]
+        [keywords-input  keywords-input-atom]
+        [:button {:type :submit} "Submit"]]])))
 
 (defn book-item []
   (fn [{:keys [_id title author published archive keywords]}]
@@ -75,17 +71,3 @@
     [:section#book-list
      (for [book  @visible-books]
        ^{:key (:_id book)} [book-item book])]))
-
-(defn header []
-  (let [name (re-frame/subscribe [::subs/name])]
-    [:div#header
-     [:h1 @name]
-     [:button {:on-click #(re-frame/dispatch [::events/toggle-add-book])} "Add book"]]))
-
-(defn main-panel []
-  (let [name (re-frame/subscribe [::subs/name])]
-    [:<>
-     [header]
-     [:div#main
-      [book-form]
-      [book-list]]]))
