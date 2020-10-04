@@ -1,5 +1,5 @@
-(ns handler
-  (:require [db                      :refer [db coll]]
+(ns books.handler
+  (:require [books.db                :refer [db coll]]
             [monger.collection       :as mc]
             [pneumatic-tubes.core    :as tubes]
             [pneumatic-tubes.httpkit :as tubes-httpkit])
