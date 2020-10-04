@@ -14,9 +14,9 @@
 
 (re-frame/reg-event-fx
   ::set-name-2
-  tubes/send-to-server
-  (fn [{:keys [db]} [_ name]]
-    { :db (assoc db :name name)}))
+  (fn [{:keys [db]} [event name]]
+    {:db (assoc db :name name)
+     :send-to-server [event name]}))
 
 (re-frame/reg-event-db
   ::set-name

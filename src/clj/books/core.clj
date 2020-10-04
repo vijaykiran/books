@@ -1,5 +1,5 @@
 (ns books.core
-  (:require [books.handler      :refer [handler]]
+  (:require [books.handler :refer [handler]]
             [org.httpkit.server :as server]))
 
 (defonce server (atom nil))

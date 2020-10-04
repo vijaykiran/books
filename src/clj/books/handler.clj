@@ -34,6 +34,7 @@
 
 (def handlers
   {:books.events/set-name set-name
+   :books.events/set-name-2 set-name
    :books.events/add-book add-book
    :books.events/delete-book delete-book
    :books.events/initialize-db initialize-db})
