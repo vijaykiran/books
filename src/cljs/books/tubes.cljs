@@ -13,6 +13,11 @@
 (defn start []
   (tubes/create! tube))
 
+(re-frame/reg-fx
+  :send-to-server
+  (fn [event]
+    (tubes/dispatch tube event)))
+
 ;; These are re-frame events received from the server
 
 (re-frame/reg-event-db
